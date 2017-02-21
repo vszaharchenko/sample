@@ -28,8 +28,7 @@
 #define EX_VERTICAL_SPEED 30
 
 /// Произвольное описание самолета или его состояния
-#define EX_DESCRIPTION "bla bla bla"
-
+#define EX_DESCRIPTION "new bla bla bla"
 
 #include <proto/sample.pb.h>
 
