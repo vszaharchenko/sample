@@ -1,0 +1,80 @@
+package ADSB;
+
+/// Географические координаты (по-умолчанию WGS-84)
+message GeoCoordinates
+{
+	/// Широта, градусы
+	required double latitude = 1;
+	/// Долгота, градусы
+	required double longitude = 2;
+	/// Высота, метры
+	optional double altitude = 3;
+	/// Номер системы координат по номенклатуре EPSG
+	/// Если не указан, то предполагается, что координаты
+	/// заданы в WGS-84
+      /// Возможными вариантами могут быть EPSG:4326 (WGS-84),
+	/// EPSG:4284 (градусы СК-42) и др. 
+	optional uint32 epsg = 4;
+}
+
+
+message Aircraft
+{
+   /// Момент к которому относятся координаты, unix-time, мс
+   required uint64 timestamp = 1;
+   /// Идентификатор ICAO24
+   required string icao24 = 2;
+   /// Идентификатор
+   required string id = 3;
+   /// Координаты самолета
+   required GeoCoordinates position = 4;   
+   /// Путевой угол самолета, градусы
+   optional double gpsCourse = 6;
+   /// Воздушная скорость, м/с
+   optional double aerialSpeed = 7;
+   /// Барометрическая высота, м
+   optional double aerialAlt = 8;
+   /// Вертикальная скорость, м/с
+   optional double verticalSpeed = 9;
+   /// Произвольное описание самолета или его состояния
+   optional string description = 10;
+}
+
+/// Пакет с описанием источника АЗНВ информации
+message Source
+{
+  /// имя источника информации АЗНВ
+  required string sourceName = 1;
+  /// название устройства получения АЗНВ информации
+  optional string deviceName = 2;
+  
+}
+
+message ADSB_Message
+{
+  extensions 100 to max;
+  
+  enum SourceType
+  {
+    Sample = 1;
+  }
+  required SourceType sourceType = 1;
+}
+  
+  
+  
+/// Пакет с сообщением АЗНВ от БЛА Мерлин
+message Sample
+{
+  extend ADSB_Message 
+  {
+    optional Sample data = 100; // Сообщение от БЛА Мерлин
+  }
+  /// Описание устройства - источника информации
+  required Source source = 1;
+  
+  /// Вложения по АЗНВ информации
+  repeated Aircraft aircraft = 2;  
+}
+
+
